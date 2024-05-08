@@ -1,0 +1,33 @@
+name: Deploy galery
+
+on:
+  push:
+    branches:
+      - dev
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: executing remote ssh commands using password
+      uses: appleboy/ssh-action@v1.0.3
+      with:
+        host: ${{ secrets.HOST }}
+        username: ${{ secrets.USER }}
+        password: ${{ secrets.PASS }}
+        port: "22"
+        script: |
+          source ~/.nvm/nvm.sh
+          source ~/.profile
+          source ~/.bashrc
+          cd /var/www/www-root/data/www/api.galery
+          git pull
+          yarn
+          tsc
+          
+          
+
