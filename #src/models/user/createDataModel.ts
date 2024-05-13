@@ -1,17 +1,15 @@
 import { ReqWithBody } from "../../baseTypes";
-import { lang } from "../langModel";
 
+export type RegAttendeesRequest = ReqWithBody<RegAttendeesData>
 
-export type UserCreateRequest = ReqWithBody<UserRegData>
-
-export type UserRegData = {
+export type RegAttendeesData = {
     name: string,
     surname: string,
-    lastname: string | undefined,
+    lastname?: string,
+    organization: string,
+    grade: string,
+    mail: string,
     phone: string,
-    birth: string,
-    password: string,
-    invite: string,
-    lang: lang,
+    country: string,
+    city: string,
 }
-

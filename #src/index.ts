@@ -4,13 +4,15 @@ import cors from 'cors'
 import path from 'path';
 global.uploadDir = path.join(__dirname, 'uploads_files');
 
-import { filesRouter } from './routes/filesRouter';
+import { userRouter } from './routes/userRouter';
+import { qrRouter } from './routes/qrRouter';
 
 const app = express()
 
 app.use(cors())
 
-app.use('/api/files', filesRouter)
+app.use('/api/reg', userRouter)
+app.use('/api/qr', qrRouter)
 
 app.use((req: Request, res: Response)=>{
     res.status(404).json({

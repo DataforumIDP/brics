@@ -1,6 +1,6 @@
 import { Response, NextFunction } from "express";
 import { db } from "../config/db";
-import { UserCreateRequest } from "../models/user/createDataModel";
+
 import { formatedPhone } from "../utils/formatedPhone";
 import { queryFromBd } from "../utils/queryBuilder";
 
@@ -12,7 +12,7 @@ import { queryFromBd } from "../utils/queryBuilder";
  */
 export function userExistsStatus(options: { exists: boolean}) {
     return async function (
-        req: UserCreateRequest,
+        // req: UserCreateRequest,
         res: Response,
         next: NextFunction
     ) {

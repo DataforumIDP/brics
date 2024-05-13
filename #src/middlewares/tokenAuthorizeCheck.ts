@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import { db } from "../config/db";
 import { authError, dbError } from "../models/errorModels";
-import { setUserData } from "../models/user/getUserDataModel";
+// import { setUserData } from "../models/user/getUserDataModel";
 import { queryFromBd } from "../utils/queryBuilder";
 
 export const tokenAuthorizeCheck = async (
