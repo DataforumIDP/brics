@@ -7,15 +7,18 @@ export async function companyExistsMiddlewares(
     res: Response,
     next: NextFunction
 ) {
-    const organization = (await info(req.body.organization))?.value;
-    if (!organization)
+    const [organization, err] = await info(req.body.organization);
+    if (err || !organization?.value) {
+        console.log(err?.response.status);
+        
         return errorSend(res, {
             organization: {
-                ru: "Некорректная организация",
-                en: "",
+                ru: err?.response.status == 504? "Лимит запросов привышен, обратитесь в поддержку!" : "Некорректная организация!",
+                en: err?.response.status == 504? "The request limit has been exceeded, contact support!" : "Incorrect organization!",
             },
         });
-    
-    req.body.organization = organization
-    next()
+    } 
+
+    req.body.organization = organization;
+    next();
 }

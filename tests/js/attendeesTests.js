@@ -23,7 +23,7 @@ const getRandomNumber = () => {
 
 async function test() {
     console.time('test');
-    const requests = Array.from({length: 30}).map(createUser)
+    const requests = Array.from({length: 6000}).map(createUser)
     
     let responses = await Promise.all(requests)
     responses = responses.map(item=> item.data??item.response.data)
@@ -34,22 +34,16 @@ async function test() {
 async function testSingle() {
     const requests = await createUser()
     console.log(requests);
-    // try {
-    // } catch (e) {
-    //     console.log(e);
-    // }
-    
-    // let responses = await Promise.all(requests)
-    // responses = responses.map(item=> item.data)
 }
 
+test()
 
 async function createUser(){
     const data = getRandomUser()
 
-    const result = new Promise(async (resolve)=>{
+    const result = new Promise((resolve)=>{
         try {
-            const res = await axios.post('http://localhost:3225/api/reg/attendees', data)
+            const res = axios.post('http://localhost:3225/api/reg/attendees', data)
             resolve(res)
         } catch (err) {
             resolve(err)
@@ -57,6 +51,4 @@ async function createUser(){
     })
 
     return result
-    
-
 }
