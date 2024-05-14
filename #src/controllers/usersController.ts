@@ -11,7 +11,7 @@ import { insertAttendees } from "../utils/insertAttendeesTrans";
 export class User {
     async regFromExel(req: Request, res: Response) {
         if (!req.files || !req.files.file)
-            return res.status(400).json({ error: "Нет файла" });
+            return res.status(400).json({ error: "Нет файлаfff" });
 
         const { file } = req.files;
 
