@@ -3,23 +3,24 @@ import { NextFunction, Request, Response } from "express";
 import { errorSend } from "../models/errorModels";
 import { queryFromBd } from "../utils/queryBuilder";
 
-export async function attendeedUnexistsCheck(
+export async function techniciansUnexistsCheck(
     req: Request,
     res: Response,
     next: NextFunction
 ) {
-    const { mail } = req.body;
+    const { passport } = req.body;
 
     const result = await queryFromBd(
-        `/* SQL */ SELECT id FROM attendees WHERE mail=$1`,
-        [mail]
+        `/* SQL */ SELECT id FROM technicians WHERE passport=$1`,
+        [passport]
     );
 
     if (result?.rowCount)
+        
         return errorSend(res, {
-            mail: {
-                ru: "Почта уже занята!",
-                en: "The mail is already occupied!",
+            passport: {
+                ru: "Пользователь уже зарегистрирован!",
+                en: "The user is already registered!",
             },
         });
 
