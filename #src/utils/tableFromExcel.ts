@@ -1,7 +1,8 @@
 import { UploadedFile } from "express-fileupload";
 import * as Excel from "exceljs";
+import { RegTechniciansData } from "../models/user/createDataModel";
 
-const dictionary = ["name", "surname", "mail", "company"]
+const dictionary = ["surname", "name", "lastname", "passport", "mail", "organization", "grade", "activity"]
 
 export async function getTableFromExcel(file: UploadedFile) {
     const workbook = new Excel.Workbook()
@@ -10,7 +11,8 @@ export async function getTableFromExcel(file: UploadedFile) {
 
     if (!worksheet) return false
 
-    let obj: object[] = []
+    let obj: any[] = []
+    
     worksheet.eachRow({ includeEmpty: false }, (row, rowNumber)=> {
         if (rowNumber == 1) return
 
@@ -21,5 +23,6 @@ export async function getTableFromExcel(file: UploadedFile) {
         })
         obj.push(rowInTable)
     })
-    return obj
+
+    return obj as RegTechniciansData[]
 }

@@ -9,12 +9,12 @@ import {
 } from "../models/user/createDataModel";
 
 import { db } from "../config/db";
-import { dbError } from "../models/errorModels";
+import { dbError, errorSend } from "../models/errorModels";
 
 export class User {
     async regFromExel(req: Request, res: Response) {
         if (!req.files || !req.files.file)
-            return res.status(400).json({ error: "Нет файлаfff" });
+            return res.status(400).json({ error: "Нет файла" });
 
         const { file } = req.files;
 
@@ -25,7 +25,24 @@ export class User {
 
         const table = await getTableFromExcel(file);
 
-        res.json({ table });
+        if (!table) return errorSend(res, { error: "excel reading error" });
+
+        const validationResult = table.every(validationTechnicianData);
+
+        if (!validationResult)
+            return errorSend(res, { file: "Ошибка в обработки файла!" });
+
+        const insertPromises = table.map(
+            async (item) =>
+                await insertTechnicians({
+                    ...item,
+                    ...{ timestamp: new Date().getTime() },
+                })
+        );
+
+        await Promise.all(insertPromises)
+
+        res.status(201).json({table});
     }
 
     async regAttendees(req: RegAttendeesRequest, res: Response) {
@@ -48,13 +65,12 @@ export class User {
 
         const [result, error] = await insertTechnicians({
             ...data,
-            ...{timestamp}
-        })
+            ...{ timestamp },
+        });
 
         console.log(error);
-        
 
-        if (error) return dbError(res, '#7004')
+        if (error) return dbError(res, "#7004");
 
         res.json(result);
     }
@@ -172,4 +188,21 @@ export async function insertTechnicians(
     } finally {
         client.release();
     }
+}
+
+function validationTechnicianData(item: RegTechniciansData) {
+    const { name, surname, lastname, organization, grade, activity, passport } =
+        item;
+
+    if (!name || name.length < 2 || name.length > 30) return false;
+    if (!surname || surname.length < 2 || surname.length > 30) return false;
+    if (!!lastname && (lastname.length < 2 || lastname.length > 30))
+        return false;
+    if (!organization || organization.length < 2 || organization.length > 40)
+        return false;
+    if (!grade || grade.length < 2 || grade.length > 40) return false;
+    if (!activity || activity.length < 2 || activity.length > 40) return false;
+    if (!passport || passport.length < 6 || passport.length > 20) return false;
+
+    return true;
 }
