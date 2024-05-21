@@ -5,6 +5,7 @@ import {
     lastnameMiddleware,
     nameMiddleware,
     organizationMiddleware,
+    passportMiddleware,
     surnameMiddleware,
 } from "./attendeesMiddlewares";
 
@@ -19,12 +20,7 @@ const activityMiddleware = body("activity")
         en: "The type of activity can be from 3 to 80 characters!",
     });
 
-const passportMiddleware = body("passport")
-    .isLength({ min: 8, max: 20 })
-    .withMessage({
-        ru: "Некорректный номер паспорта!",
-        en: "Incorrect passport number!",
-    });
+
 
 export const techniciansMiddlewares = [
     nameMiddleware,

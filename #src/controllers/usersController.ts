@@ -104,6 +104,7 @@ export async function insertAttendees(
         name,
         surname,
         lastname = "",
+        passport,
         organization,
         grade,
         mail,
@@ -119,7 +120,7 @@ export async function insertAttendees(
             `/* SQL */ 
             INSERT INTO attendees 
             (name, surname, lastname, organization, grade, mail, phone, country, city, code, timestamp) 
-            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, (SELECT id FROM qrs WHERE used = false LIMIT 1 FOR UPDATE), $10) 
+            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, (SELECT id FROM qrs WHERE used = false LIMIT 1 FOR UPDATE), $10, 11) 
             RETURNING *`,
             [
                 name,
@@ -132,6 +133,7 @@ export async function insertAttendees(
                 country,
                 city,
                 timestamp.toString(),
+                passport
             ]
         );
 

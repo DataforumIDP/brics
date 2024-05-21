@@ -25,6 +25,13 @@ export const lastnameMiddleware = body("lastname")
         en: "The length of the Patronymic is from 3 to 30 characters!",
     });
 
+export const passportMiddleware = body("passport")
+    .isLength({ min: 8, max: 20 })
+    .withMessage({
+        ru: "Некорректный номер паспорта!",
+        en: "Incorrect passport number!",
+    });
+
 export const organizationMiddleware = body("organization")
     .isLength({ min: 3, max: 20 })
     .withMessage({
