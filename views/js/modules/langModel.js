@@ -38,7 +38,7 @@ const content = [
         attr: 'placeholder',
         text: {
             ru: 'Организация',
-            en:  'Name of the organization'
+            en: 'Name of the organization'
         }
     },
     {
@@ -109,11 +109,11 @@ const content = [
 
 let currentLang = 'ru'
 
-export function getLang(){
+export function getLang() {
     return currentLang
 }
 
-export function toggleLang () {
+export function toggleLang() {
     $(this).addClass('--active')
     $('.lang').toggleClass('--open')
     const lang = $(this).attr('value')
@@ -127,7 +127,7 @@ export function loadLangStruct(lang) {
     content.forEach(loadLangItem.bind(lang))
 }
 
-function loadLangItem(item){
+function loadLangItem(item) {
     const { selector, attr, text } = item
     if (attr != 'placeholder') {
         $(selector)[attr](text[this])
