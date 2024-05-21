@@ -3,7 +3,7 @@ import { setData } from "./regData.js";
 export async function inputLogic() {
     let val = $(this).val()
     const result = (await axios(`http://inn.wpdataforum.ru/?q=${val}`)).data.suggestions
-    
+
     $('.list__item').remove()
     if (result.length) {
         result.forEach(element => {
@@ -11,10 +11,10 @@ export async function inputLogic() {
         });
         $('.org-list').removeClass('--none')
     } else {
-        
+
         $('.org-list').addClass('--none')
     }
-} 
+}
 
 $(document).on('click', '.list__item', function () {
     $(organization).val($(this).attr('d-val'))

@@ -14,18 +14,18 @@ const titles = {
     }
 }
 
-export async function attendeesReg() {
+export async function userReg(type) {
     const data = getData()
 
     if (!data.check) {
         $('.modal__error').remove()
         $('.modal__title').text(titles.error[getLang()])
-        $('.modal__btn').before(`<h3 class="modal__error">${getLang() == 'ru' ? 'Согласие на обработку данных является обязательным!' : 'Consent to data processing is mandatory!'}</h3>`)
+        $('.modal__btn').before(`<h3 class="modal__error">${getLang() == 'ru' ? 'Согласие на обработку данных является обязательным!' : 'Consent to the processing of personal data is mandatory!'}</h3>`)
         openModal('.modal')
         return
     }
 
-    const [res, err] = await sendRegData(data)
+    const [res, err] = await sendRegData(data, type)
 
     if (err) {
         $('.modal__error').remove()
@@ -40,14 +40,15 @@ export async function attendeesReg() {
 
     $('.modal__error').remove()
     $('.modal__title').text(titles.success[getLang()])
+    openModal('.modal')
 
 }
 
 
-async function sendRegData(data) {
+async function sendRegData(data, type) {
     const result = await new Promise(async (resolve) => {
         try {
-            const result = await axios.post('http://brics.wpdataforum.ru/api/reg/attendees', data)
+            const result = await axios.post(`http://brics.wpdataforum.ru/api/reg/${type}`, data)
             resolve([result.data, null])
         } catch (err) {
             resolve([null, err.response])

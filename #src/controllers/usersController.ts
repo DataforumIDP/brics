@@ -14,23 +14,43 @@ import { dbError, errorSend } from "../models/errorModels";
 export class User {
     async regFromExel(req: Request, res: Response) {
         if (!req.files || !req.files.file)
-            return res.status(400).json({ error: "Нет файла" });
+            return res.status(400).json({
+                errors: {
+                    file: {
+                        ru: 'Необходимо загрузить файл!',
+                        en: 'The file needs to be uploaded!'
+                    },
+                },
+            });
 
         const { file } = req.files;
 
         if (!isNotArray(file))
-            return res
-                .status(400)
-                .json({ error: "Невозможна загрузка нескольких файлов" });
+            return res.status(400).json({
+                errors: {
+                    file: {
+                        ru: "Невозможна загрузка нескольких файлов",
+                        en: "Невозможна загрузка нескольких файлов",
+                    },
+                },
+            });
 
         const table = await getTableFromExcel(file);
 
-        if (!table) return errorSend(res, { error: "excel reading error" });
+        if (!table)
+            return errorSend(res, {
+                error: { ru: "excel reading error", en: "excel reading error" },
+            });
 
         const validationResult = table.every(validationTechnicianData);
 
         if (!validationResult)
-            return errorSend(res, { file: "Ошибка в обработки файла!" });
+            return errorSend(res, {
+                file: {
+                    ru: "Ошибка в обработки файла!",
+                    en: "Error in file processing!",
+                },
+            });
 
         const insertPromises = table.map(
             async (item) =>
@@ -40,9 +60,9 @@ export class User {
                 })
         );
 
-        await Promise.all(insertPromises)
+        await Promise.all(insertPromises);
 
-        res.status(201).json({table});
+        res.status(201).json({ table });
     }
 
     async regAttendees(req: RegAttendeesRequest, res: Response) {

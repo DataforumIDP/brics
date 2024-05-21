@@ -5,7 +5,10 @@ export function authError(res: Response) {
 };
 
 export function dbError(res: Response, slag: string = "#777!") {
-    return errorSend( res, { db: `Ошибка базы данных ${slag}`, }, { code: 500 } );
+    return errorSend( res, { db: {
+        ru: `Ошибка базы данных ${slag}`,
+        en: `Error dataBase ${slag}`,
+    } }, { code: 500 } );
 }
 
 export function errorSend(
