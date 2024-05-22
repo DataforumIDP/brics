@@ -6,6 +6,7 @@ export type RegAttendeesData = {
     name: string;
     surname: string;
     lastname?: string;
+    passport: string;
     organization: string;
     grade: string;
     mail: string;

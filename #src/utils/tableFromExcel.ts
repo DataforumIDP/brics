@@ -2,7 +2,7 @@ import { UploadedFile } from "express-fileupload";
 import * as Excel from "exceljs";
 import { RegTechniciansData } from "../models/user/createDataModel";
 
-const dictionary = ["surname", "name", "lastname", "passport", "mail", "organization", "grade", "activity"]
+const dictionary = ["surname", "name", "lastname", "passport", "organization", "grade", "activity"]
 
 export async function getTableFromExcel(file: UploadedFile) {
     const workbook = new Excel.Workbook()
