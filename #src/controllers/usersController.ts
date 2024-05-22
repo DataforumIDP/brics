@@ -10,30 +10,13 @@ import {
 
 import { db } from "../config/db";
 import { dbError, errorSend } from "../models/errorModels";
+import { CustomRequest } from "../models/excelFileModel";
 
 export class User {
-    async regFromExel(req: Request, res: Response) {
-        if (!req.files || !req.files.file)
-            return res.status(400).json({
-                errors: {
-                    file: {
-                        ru: 'Необходимо загрузить файл!',
-                        en: 'The file needs to be uploaded!'
-                    },
-                },
-            });
+    async regFromExel(baseReq: Request, res: Response) {
 
+        const req = baseReq as CustomRequest
         const { file } = req.files;
-
-        if (!isNotArray(file))
-            return res.status(400).json({
-                errors: {
-                    file: {
-                        ru: "Невозможна загрузка нескольких файлов",
-                        en: "Невозможна загрузка нескольких файлов",
-                    },
-                },
-            });
 
         const table = await getTableFromExcel(file);
 
@@ -133,7 +116,7 @@ export async function insertAttendees(
                 country,
                 city,
                 timestamp.toString(),
-                passport
+                passport,
             ]
         );
 
