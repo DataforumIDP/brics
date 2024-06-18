@@ -1,8 +1,9 @@
 import { Request } from 'express';
 import fileUpload from 'express-fileupload';
 
-export interface CustomRequest extends Request {
+export interface RequestWithTable extends Request {
     files: {
         file: fileUpload.UploadedFile;
     };
+    table: any[]
 }
