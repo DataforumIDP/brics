@@ -1,13 +1,12 @@
 import { ReqWithBody } from "../../baseTypes";
 
-export type CreatePartnerRequest = ReqWithBody<CreaetePartnerData>;
+export type CreatePartnerRequest = ReqWithBody<CreatePartnerData>;
 
-export type CreaetePartnerData = {
+export type CreatePartnerData = {
     name: string;
     surname: string;
     lastname?: string;
     grade: string;
-    mail: string;
     passport: string;
     activity: string;
 };

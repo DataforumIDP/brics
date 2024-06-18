@@ -8,7 +8,6 @@ import {
 
 import { db } from "../config/db";
 import { dbError, errorSend } from "../models/errorModels";
-import { CustomRequest } from "../models/excelFileModel";
 import { UserData, getUserData } from "../models/userDataModel";
 import { dbQuery } from "../models/dbModel";
 

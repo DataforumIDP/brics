@@ -1,5 +1,5 @@
 import { ReqWithBody, ReqWithParams } from "../../baseTypes";
-import { CreaetePartnerData } from "./createDataModel";
+import { CreatePartnerData } from "./createDataModel";
 
 export type UpdatePartnerRequest = ReqWithParams<{ id: string }> &
-    ReqWithBody<Partial<CreaetePartnerData>>;
+    ReqWithBody<Partial<CreatePartnerData>>;

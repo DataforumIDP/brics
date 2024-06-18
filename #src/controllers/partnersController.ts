@@ -4,6 +4,9 @@ import { dbError } from "../models/errorModels";
 import { ReqWithParams, ReqWithQuery } from "../baseTypes";
 import { UserData } from "../models/userDataModel";
 import { UpdatePartnerRequest } from "../models/partners/updateDataModel";
+import { RequestWithTable } from "../models/excelFileModel";
+import { getTableFromExcel } from "../utils/tableFromExcel";
+import { CreatePartnerData } from "../models/partners/createDataModel";
 
 export class Partner {
     async reg(req: Request, res: Response) {
@@ -46,7 +49,7 @@ export class Partner {
                 organization,
                 passport,
                 activity,
-                'partner'
+                "partner",
             ]
         );
 
@@ -56,7 +59,32 @@ export class Partner {
 
         res.json({ user });
     }
-    async massReg(req: Request, res: Response) {}
+
+    async massReg(req: Request, res: Response) {
+        
+        const {table} = req as RequestWithTable
+
+        const { id } = req.user as UserData;
+
+        let [result] = await dbQuery(
+            `/* SQL */ 
+            SELECT organization FROM partners WHERE account=$1`,
+            [id]
+        );
+
+        if (result === null) return dbError(res, "#3009");
+
+        const organization = result.rows[0].organization ?? "none";
+
+        const [query, values] = insertPartnersQuery(table, id, organization)
+
+        // res.json({query, values})
+        const [insertResult] = await dbQuery(query, values)
+
+        if (insertResult === null) return dbError(res, '#3010')
+
+        res.status(201).json({users: insertResult.rows})
+    }
 
     async list(
         req: Request &
@@ -185,8 +213,9 @@ export class Partner {
         const { id } = req.user as UserData;
 
         const updateKeys = Object.keys(data).filter(
-            (key) => allowedUpdatesInfo.includes(key) && data[key] != ""
+            (key) => allowedUpdatesInfo.includes(key) && (data[key] != "" || data[key] === null)
         );
+        
 
         // ToDo | сделать ответ, если не требуется обновление
         if (updateKeys.length === 0) {
@@ -224,7 +253,6 @@ export class Partner {
 
 const accessSort = ["id", "name", "surname", "lasname", "organization"];
 
-
 const allowedUpdatesInfo = [
     "reminder",
     "description",
@@ -241,3 +269,31 @@ const allowedUpdates = [
     "passport",
     "activity",
 ];
+
+
+function insertPartnersQuery(array: CreatePartnerData[], partner: string, organization: string): [string, any[]] {
+
+    const enhancedParticipants = array.map(participant => ({
+        ...participant,
+        type: 'partner',
+        timestamp: new Date().getTime(),
+        partner,
+        organization
+    }));
+
+    const values = enhancedParticipants.map(
+        (item, index) => `($${index * 10 + 1}, $${index * 10 + 2}, $${index * 10 + 3}, $${index * 10 + 4}, $${index * 10 + 5}, $${index * 10 + 6}, $${index * 10 + 7}, $${index * 10 + 8}, $${index * 10 + 9}, $${index * 10 + 10})`
+    ).join(', ');
+
+    // Плоский массив всех значений для параметризованного запроса
+    const queryParams = enhancedParticipants.flatMap(({ name, surname, lastname, passport, grade, activity, type, timestamp, partner, organization }) => [name, surname, lastname, passport, grade, activity, type, timestamp, partner, organization]);
+
+    // Создаем запрос
+    const query = `/* SQL */ 
+        INSERT INTO users (name, surname, lastname, passport, grade, activity, type, timestamp, partner_id, organization)
+        VALUES ${values}
+        RETURNING *
+    `;
+
+    return [query, queryParams]
+}

@@ -16,7 +16,8 @@ const descriptionMiddleware = body("description")
 
 const contactsMiddleware = body("contacts")
     .optional()
-    .custom(items => {
+    .custom(items => {        
+        if (items === null) return true
         if ((items as string[]).every(item=>item.length<200)) return true
         throw new Error()
     })
