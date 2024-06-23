@@ -9,7 +9,12 @@ import { qrRouter } from "./routes/qrRouter";
 
 const app = express();
 
-app.use(cors());
+app.use(cors({
+    origin: '*',
+    methods: '*'
+}));
+
+app.options('*', cors());
 
 app.use("/api/reg", userRouter);
 app.use("/api/qr", qrRouter);
