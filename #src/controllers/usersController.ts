@@ -12,40 +12,6 @@ import { UserData, getUserData } from "../models/userDataModel";
 import { dbQuery } from "../models/dbModel";
 
 export class User {
-    // async regFromExel(baseReq: Request, res: Response) {
-
-    //     const req = baseReq as CustomRequest
-    //     const { file } = req.files;
-
-    //     const table = await getTableFromExcel(file);
-
-    //     if (!table)
-    //         return errorSend(res, {
-    //             error: { ru: "excel reading error", en: "excel reading error" },
-    //         });
-
-    //     const validationResult = table.every(validationTechnicianData);
-
-    //     if (!validationResult)
-    //         return errorSend(res, {
-    //             file: {
-    //                 ru: "Ошибка в обработки файла!",
-    //                 en: "Error in file processing!",
-    //             },
-    //         });
-
-    //     const insertPromises = table.map(
-    //         async (item) =>
-    //             await insertTechnicians({
-    //                 ...item,
-    //                 ...{ timestamp: new Date().getTime() },
-    //             })
-    //     );
-
-    //     await Promise.all(insertPromises);
-
-    //     res.status(201).json({ table });
-    // }
 
     async reg(req: RegAttendeesRequest, res: Response) {
         const {
@@ -90,6 +56,8 @@ export class User {
 
         res.json({ user });
     }
+
+    
 }
 
 // export async function insertAttendees(

@@ -1,4 +1,4 @@
-import { Response } from "express";
+import { Request, Response } from "express";
 import { ReqWithBody } from "../baseTypes";
 import { dbQuery } from "../models/dbModel";
 import {
@@ -7,6 +7,7 @@ import {
 } from "../models/errorModels";
 import { saltPassword } from "../utils/createSaltPass";
 import { createToken } from "../utils/createToken";
+import { getUserData } from "../models/userDataModel";
 
 export async function authorize(
     req: ReqWithBody<{ login: string; password: string }>,
@@ -39,4 +40,9 @@ export async function authorize(
     if (insertRes === null) return dbError(res, '#0002')
 
     res.json({token});
+}
+
+export async function getTypeOfAccount(req: Request, res: Response){
+    const {type} = getUserData()
+    res.json({type})
 }
