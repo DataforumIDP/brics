@@ -43,6 +43,6 @@ export async function authorize(
 }
 
 export async function getTypeOfAccount(req: Request, res: Response){
-    const {type} = getUserData()
+    const type = req.user?.type
     res.json({type})
 }
