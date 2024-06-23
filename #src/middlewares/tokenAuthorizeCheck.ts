@@ -1,23 +1,38 @@
 import { NextFunction, Request, Response } from "express";
-import { db } from "../config/db";
-import { authError, dbError } from "../models/errorModels";
-// import { setUserData } from "../models/user/getUserDataModel";
-import { queryFromBd } from "../utils/queryBuilder";
 
-export const tokenAuthorizeCheck = async (
-    req: Request,
-    res: Response,
-    next: NextFunction
+import { authError } from "../models/errorModels";
+
+import { dbQuery } from "../models/dbModel";
+
+
+export const tokenAuthorizeCheck = (
+    props: { optional: boolean } = { optional: false }
 ) => {
-    if (
-        req.headers.authorization &&
-        req.headers.authorization.split(" ")[0] === "Bearer"
-    ) {
-        const token = req.headers.authorization.split(" ")[1];
-        if (token != '9e6e364004a5e5ce91c1fabe36a11630') return authError(res); 
+    return async (req: Request, res: Response, next: NextFunction) => {
+        if (
+            req.headers.authorization &&
+            req.headers.authorization.split(" ")[0] === "Bearer"
+        ) {
+            const token = req.headers.authorization.split(" ")[1];
+            const timestamp = new Date().getTime() - 96 * 60 * 60 * 1000;
 
-        return next();
-    }
+            const [users] = await dbQuery(
+                `/* SQL */ 
+                SELECT 
+                a.*
+                FROM accounts a
+                LEFT JOIN tokens t ON a.id = t.account_id 
+                WHERE t.token=$1 AND t.timestamp>$2`,
+                [token, timestamp]
+            );
 
-    return authError(res);
+            if (users === null && !props.optional) return authError(res);
+
+            req.user = users?.rows[0] ?? {};
+            
+            return next();
+        }
+
+        return props.optional ? next() : authError(res);
+    };
 };

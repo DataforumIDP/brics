@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 
 import { errorSend } from "../models/errorModels";
-import { queryFromBd } from "../utils/queryBuilder";
+import { dbQuery } from "../models/dbModel";
 
 export async function attendeedUnexistsCheck(
     req: Request,
@@ -10,7 +10,7 @@ export async function attendeedUnexistsCheck(
 ) {
     const { mail } = req.body;
 
-    const result = await queryFromBd(
+    const [result] = await dbQuery(
         `/* SQL */ SELECT id FROM attendees WHERE mail=$1`,
         [mail]
     );

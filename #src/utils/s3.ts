@@ -8,8 +8,6 @@ export async function uploadToS3(
     const result: Promise<false | S3.ManagedUpload.SendData> = new Promise(
         (resolve, reject) => {
             s3.upload(params, (err: Error, data: S3.ManagedUpload.SendData) => {
-                console.log(err);
-
                 if (err) resolve(false);
                 resolve(data);
             });
@@ -23,7 +21,6 @@ export async function getFromS3(params: S3.GetObjectRequest) {
     const result: Promise<false | S3.GetObjectOutput> = new Promise(
         (resolve, reject) => {
             s3.getObject(params, (err: Error, data: S3.GetObjectOutput) => {
-                console.log(err);
 
                 if (err) resolve(false);
                 resolve(data);

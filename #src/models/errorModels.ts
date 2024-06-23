@@ -1,4 +1,4 @@
-import { NextFunction, Request, Response } from "express";
+import { Response } from "express";
 
 export function authError(res: Response) {
     return errorSend( res, { authorize: "Требуется авторизация!", }, { code: 401 } );
@@ -17,4 +17,8 @@ export function errorSend(
     options: { code: number } = { code: 400 }
 ) {
     return res.status(options.code).json({ errors: data });
+}
+
+export function logInErrorSend(res: Response,) {
+    errorSend(res, {errors: {auth: 'Некорректный логин или пароль'}}, {code: 401})
 }

@@ -4,6 +4,7 @@ export async function info(inn: string) {
     let result: any[] = [];
     let counter = 0;
     do {
+        
         try {
             const response = (
                 await axios(`http://inn.wpdataforum.ru/?q=${inn}`)
