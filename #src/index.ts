@@ -12,7 +12,12 @@ import { fileRouter } from "./routes/fileRouter";
 
 const app = express();
 
-app.use(cors());
+app.use(cors({
+    origin: '*',
+    methods: '*'
+}));
+
+app.options('*', cors());
 
 app.use("/api/attendees", userRouter);
 app.use("/api/partner", partnerRouter);
