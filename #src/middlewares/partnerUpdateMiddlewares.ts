@@ -32,5 +32,5 @@ export const partnerUpdateMiddlewares = [
     contactsMiddleware,
     siteMiddleware,
     inputValidationMiddleware,
-    companyExistsMiddlewares({ optional: true }),
+    companyExistsMiddlewares({ optional: true, saveOriginalOnError: true }),
 ];
