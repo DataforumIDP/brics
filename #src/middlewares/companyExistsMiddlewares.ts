@@ -26,9 +26,7 @@ export function companyExistsMiddlewares(
             });
         }
 
-        req.body.organization =
-            organization.value ??
-            (params.saveOriginalOnError ? req.body.organization : "");
+        if (organization?.value) req.body.organization = organization?.value
         next();
     };
 }
