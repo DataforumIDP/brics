@@ -1,6 +1,6 @@
 import axios from "axios";
 
-export async function info(inn: string) {
+export async function info(inn: string): Promise<[any, null] | [null, any]> {
     let result: any[] = [];
     let counter = 0;
     do {
@@ -16,5 +16,5 @@ export async function info(inn: string) {
         counter++;
     } while (result[1] && counter != 5);
 
-    return result;
+    return result as [any, null] | [null, any];
 }

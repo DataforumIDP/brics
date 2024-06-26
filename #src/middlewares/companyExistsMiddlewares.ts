@@ -2,18 +2,16 @@ import { NextFunction, Request, Response } from "express";
 import { info } from "../utils/getCompanyInfo";
 import { errorSend } from "../models/errorModels";
 
-export function companyExistsMiddlewares({optional} = {optional: false}) {
-
-    return async (
-        req: Request,
-        res: Response,
-        next: NextFunction
-    ) => {
-
+export function companyExistsMiddlewares(
+    params: { optional?: boolean; saveOriginalOnError?: boolean } = {
+        optional: false,
+        saveOriginalOnError: false,
+    }
+) {
+    return async (req: Request, res: Response, next: NextFunction) => {
         const [organization, err] = await info(req.body.organization);
-        
-    
-        if (err || (!organization && !optional)) {
+
+        if (err || (!organization && !params.optional)) {
             return errorSend(res, {
                 organization: {
                     ru:
@@ -26,9 +24,11 @@ export function companyExistsMiddlewares({optional} = {optional: false}) {
                             : "Incorrect organization!",
                 },
             });
-        } 
-    
-        req.body.organization = organization?.value??'';
+        }
+
+        req.body.organization =
+            organization.value ??
+            (params.saveOriginalOnError ? req.body.organization : "");
         next();
-    }
+    };
 }
