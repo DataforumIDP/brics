@@ -97,12 +97,8 @@ export class Partner {
 
         let { search, order = "true", sort = "id" } = req.query;
         
-        console.log(`Order-text: ${order}`, order);
         order = order == "true";
-
-        console.log(`Order-val: ${!!order ? "ASC" : "DESC"}`);
         
-
         let serchClause = search
             ? `/* SQL */ 
                 (name LIKE $2 OR
@@ -132,26 +128,6 @@ export class Partner {
 
         if (!accessSort.includes(sort)) sort = "id";
 
-        res.json({
-            text: `/* SQL */ 
-            SELECT
-            id,
-            name,
-            surname,
-            lastname,
-            grade,
-            country,
-            city,
-            passport,
-            mail,
-            organization,
-            activity,
-            phone
-            FROM users
-            WHERE ${serchClause} partner_id = $1
-            ORDER BY ${sort}, id ${!!order ? "ASC" : "DESC"}`
-        })
-
         const [result] = await dbQuery(
             `/* SQL */ 
             SELECT
@@ -169,7 +145,7 @@ export class Partner {
             phone
             FROM users
             WHERE ${serchClause} partner_id = $1
-            ORDER BY ${sort}, id ${!!order ? "ASC" : "DESC"}`,
+            ORDER BY ${sort} ${!!order ? "ASC" : "DESC"}`,
             search ? [id, search] : [id]
         );
 
