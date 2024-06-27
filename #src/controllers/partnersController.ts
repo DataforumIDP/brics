@@ -95,10 +95,10 @@ export class Partner {
     ) {
         const { id } = req.user as UserData;
 
-        let { search, order = true, sort = "id" } = req.query;
+        let { search, order = "true", sort = "id" } = req.query;
         
         console.log(`Order-text: ${order}`, order);
-        order = order == true;
+        order = order == "true";
 
         console.log(`Order-val: ${order}`);
         
