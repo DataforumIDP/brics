@@ -96,8 +96,12 @@ export class Partner {
         const { id } = req.user as UserData;
 
         let { search, order = true, sort = "id" } = req.query;
-
+        
+        console.log(`Order-text: ${order}`, order);
         order = order == true;
+
+        console.log(`Order-val: ${order}`);
+        
 
         let serchClause = search
             ? `/* SQL */ 
