@@ -132,6 +132,26 @@ export class Partner {
 
         if (!accessSort.includes(sort)) sort = "id";
 
+        res.json({
+            text: `/* SQL */ 
+            SELECT
+            id,
+            name,
+            surname,
+            lastname,
+            grade,
+            country,
+            city,
+            passport,
+            mail,
+            organization,
+            activity,
+            phone
+            FROM users
+            WHERE ${serchClause} partner_id = $1
+            ORDER BY ${sort}, id ${!!order ? "ASC" : "DESC"}`
+        })
+
         const [result] = await dbQuery(
             `/* SQL */ 
             SELECT
