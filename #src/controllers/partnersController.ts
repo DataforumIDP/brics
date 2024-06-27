@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { dbQuery } from "../models/dbModel";
-import { dbError } from "../models/errorModels";
+import { dbError, errorSend } from "../models/errorModels";
 import { ReqWithParams, ReqWithQuery } from "../baseTypes";
 import { UserData } from "../models/userDataModel";
 import { UpdatePartnerRequest } from "../models/partners/updateDataModel";
@@ -66,6 +66,8 @@ export class Partner {
 
         const { id } = req.user as UserData;
 
+        if (!table.length) return res.status(204).json()
+
         let [result] = await dbQuery(
             `/* SQL */ 
             SELECT organization FROM partners WHERE account=$1`,
@@ -93,9 +95,9 @@ export class Partner {
     ) {
         const { id } = req.user as UserData;
 
-        let { search, order = "true", sort = "id" } = req.query;
+        let { search, order = true, sort = "id" } = req.query;
 
-        order = order == "true";
+        order = order == true;
 
         let serchClause = search
             ? `/* SQL */ 
