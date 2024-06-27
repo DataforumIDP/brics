@@ -100,7 +100,7 @@ export class Partner {
         console.log(`Order-text: ${order}`, order);
         order = order == "true";
 
-        console.log(`Order-val: ${order}`);
+        console.log(`Order-val: ${!!order ? "ASC" : "DESC"}`);
         
 
         let serchClause = search
