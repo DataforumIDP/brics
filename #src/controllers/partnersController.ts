@@ -142,6 +142,7 @@ export class Partner {
             mail,
             organization,
             activity,
+            timestamp,
             phone
             FROM users
             WHERE ${serchClause} partner_id = $1
