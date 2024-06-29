@@ -85,7 +85,7 @@ export class Admin {
             *
             FROM users
             ${serchClause}
-            ORDER BY ${sort}, id ${!!order ? "ASC" : "DESC"}`,
+            ORDER BY ${sort} ${!!order ? "ASC" : "DESC"}`,
 
             [search, fTypes]
         );
