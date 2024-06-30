@@ -85,7 +85,7 @@ export class Admin {
             *
             FROM users
             ${serchClause}
-            ORDER BY ${sort}, id ${!!order ? "ASC" : "DESC"}`,
+            ORDER BY ${sort} ${!!order ? "ASC" : "DESC"}`,
 
             [search, fTypes]
         );
@@ -206,7 +206,7 @@ export class Admin {
     }
 
     async partnersDownload(req: Request, res: Response) {
-        4008;
+        
         const [result] = await dbQuery(
             `/* SQL */
             SELECT *
@@ -221,17 +221,17 @@ export class Admin {
             delete item.id;
             delete item.timestamp;
 
-            item.reminder = item.reminder
+            item.logo = item.logo
                 ? `https://brics.wpdataforum.ru/api/files/${item.reminder}`
                 : null;
-            item.contacts = item.contacts ? item.contacts.join(", ") : null;
+            item.contacts = item.contacts ?? "Не указаны";
             item.organization = item.organization ?? "Не указана";
 
             return item;
         });
 
         const [file, err] = excelFromObject(partnersData, {
-            reminder: "Памятка",
+            logo: "Логотип",
             description: "Описание",
             contacts: "Контакты",
             site: "Сайт",
