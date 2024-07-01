@@ -9,6 +9,7 @@ import { partnerDeleteMiddleware } from "../middlewares/partnerDeleteMiddleware"
 import { partnerUpdateMiddlewares } from "../middlewares/partnerUpdateMiddlewares";
 import fileUpload from "express-fileupload";
 import { partnerMassRegMiddlewares } from "../middlewares/partnerMassRegMiddlewares";
+import { partnerUpdateUserMiddlewares } from "../middlewares/partnerUpdateUserMiddlewares";
 
 export const partnerRouter = Router();
 
@@ -20,7 +21,7 @@ partnerRouter.post("/", partnerRegMiddlewares, partner.reg);
 partnerRouter.get("/", [tokenAuthorizeCheck(), typeCheck('partner')], partner.info);
 partnerRouter.patch("/", partnerUpdateMiddlewares, partner.updateInfo);
 partnerRouter.get("/list", [tokenAuthorizeCheck(), typeCheck('partner')], partner.list);
-partnerRouter.patch("/:id", [tokenAuthorizeCheck(), typeCheck('partner')], partner.update);
+partnerRouter.patch("/:id", partnerUpdateUserMiddlewares, partner.update);
 partnerRouter.delete("/:id", partnerDeleteMiddleware, partner.delete);
 
 partnerRouter.use(fileUpload({
