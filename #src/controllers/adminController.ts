@@ -267,7 +267,7 @@ export class Admin {
 
         const clause = ids.length
             ? `/* SQL */ WHERE id = ANY($1::int[])`
-            : `/* SQL */ WHERE partner_id != $1`;
+            : `/* SQL */ WHERE id != $1`;
 
         const [result] = await dbQuery(
             `/* SQL */ SELECT surname, name, lastname, passport, grade, organization, type, country, city, mail, phone  FROM users ${clause}`,
