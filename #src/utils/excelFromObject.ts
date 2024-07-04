@@ -13,7 +13,6 @@ export function excelFromObject(obj: object[], dict: object): [Excel.Workbook, n
 
         // Добавляем строки в Excel файл
         worksheet.addRows(obj);
-        console.log(obj);
         
         return [workbook, null];
 
