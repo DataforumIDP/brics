@@ -12,7 +12,6 @@ export const partnerMassRegMiddlewares = [
         "lastname",
         "passport",
         "grade",
-        "activity",
     ]),
     partnerTableMiddleware
 ];

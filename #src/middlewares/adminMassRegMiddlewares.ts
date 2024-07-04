@@ -12,7 +12,6 @@ export const adminMassRegMiddlewares = [
         "lastname",
         "passport",
         "grade",
-        "activity",
         "type",
         "organization",
         "country",

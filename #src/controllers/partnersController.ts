@@ -285,15 +285,15 @@ function insertPartnersQuery(array: CreatePartnerData[], partner: string, organi
     }));
 
     const values = enhancedParticipants.map(
-        (item, index) => `($${index * 10 + 1}, $${index * 10 + 2}, $${index * 10 + 3}, $${index * 10 + 4}, $${index * 10 + 5}, $${index * 10 + 6}, $${index * 10 + 7}, $${index * 10 + 8}, $${index * 10 + 9}, $${index * 10 + 10})`
+        (item, index) => `($${index * 9+ 1}, $${index * 9+ 2}, $${index * 9+ 3}, $${index * 9+ 4}, $${index * 9+ 5}, $${index * 9+ 6}, $${index * 9+ 7}, $${index * 9+ 8}, $${index * 9+ 9})`
     ).join(', ');
 
     // Плоский массив всех значений для параметризованного запроса
-    const queryParams = enhancedParticipants.flatMap(({ name, surname, lastname, passport, grade, activity, type, timestamp, partner, organization }) => [name, surname, lastname, passport, grade, activity, type, timestamp, partner, organization]);
+    const queryParams = enhancedParticipants.flatMap(({ name, surname, lastname, passport, grade, type, timestamp, partner, organization }) => [name, surname, lastname, passport, grade, type, timestamp, partner, organization]);
 
     // Создаем запрос
     const query = `/* SQL */ 
-        INSERT INTO users (name, surname, lastname, passport, grade, activity, type, timestamp, partner_id, organization)
+        INSERT INTO users (name, surname, lastname, passport, grade, type, timestamp, partner_id, organization)
         VALUES ${values}
         RETURNING *
     `;
