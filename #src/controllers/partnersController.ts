@@ -265,7 +265,7 @@ export class Partner {
             : `/* SQL */ WHERE partner_id = $1`;
 
         const [result] = await dbQuery(
-            `/* SQL */ SELECT surname, name, lastname, passport, grade, organization ${clause}`,
+            `/* SQL */ SELECT surname, name, lastname, passport, grade, organization FROM users ${clause}`,
             ids.length ? [ids, id] : [id]
         );
 
