@@ -270,14 +270,13 @@ function insertUsersQuery(array: any[]): [string, any[]] {
     const values = enhancedParticipants
         .map(
             (item, index) =>
-                `($${index * 14 + 1}, $${index * 14 + 2}, $${index * 14 + 3}, 
-                  $${index * 14 + 4}, $${index * 14 + 5}, $${
-                    index * 14 + 6
-                }, $${index * 14 + 7}, 
-                  $${index * 14 + 8}, $${index * 14 + 9}, $${index * 14 + 10},
-                  $${index * 14 + 11}, $${index * 14 + 12}, $${
-                    index * 14 + 13
-                }, $${index * 14 + 14})`
+                `($${index * 13 + 1}, $${index * 13 + 2}, $${index * 13 + 3}, 
+                  $${index * 13 + 4}, $${index * 13 + 5}, $${
+                    index * 13 + 6
+                }, $${index * 13 + 7}, 
+                  $${index * 13 + 8}, $${index * 13 + 9}, $${index * 13 + 10},
+                  $${index * 13 + 11}, $${index * 13 + 12}, $${
+                    index * 13 + 13})`
         )
         .join(", ");
 
@@ -289,7 +288,6 @@ function insertUsersQuery(array: any[]): [string, any[]] {
             lastname,
             passport,
             grade,
-            activity,
             type,
             timestamp,
             organization,
@@ -304,7 +302,6 @@ function insertUsersQuery(array: any[]): [string, any[]] {
             lastname,
             passport,
             grade,
-            activity,
             type,
             timestamp,
             organization,
@@ -319,7 +316,7 @@ function insertUsersQuery(array: any[]): [string, any[]] {
     // Создаем запрос
     const query = `/* SQL */ 
         INSERT INTO users 
-        (name, surname, lastname, passport, grade, activity, type, timestamp, organization, mail, phone, country, city, created)
+        (name, surname, lastname, passport, grade, type, timestamp, organization, mail, phone, country, city, created)
         VALUES ${values}
         RETURNING *
     `;
