@@ -28,6 +28,7 @@ jobs:
           git pull
           yarn
           tsc
+          pm2 restart brics
           
           
 
