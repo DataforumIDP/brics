@@ -21,6 +21,7 @@ partnerRouter.post("/", partnerRegMiddlewares, partner.reg);
 partnerRouter.get("/", [tokenAuthorizeCheck(), typeCheck('partner')], partner.info);
 partnerRouter.patch("/", partnerUpdateMiddlewares, partner.updateInfo);
 partnerRouter.get("/list", [tokenAuthorizeCheck(), typeCheck('partner')], partner.list);
+partnerRouter.post("/download", [tokenAuthorizeCheck(), typeCheck('partner')], partner.download);
 partnerRouter.patch("/:id", partnerUpdateUserMiddlewares, partner.update);
 partnerRouter.delete("/:id", partnerDeleteMiddleware, partner.delete);
 

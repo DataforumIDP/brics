@@ -1,12 +1,13 @@
 import { Request, Response } from "express";
 import { dbQuery } from "../models/dbModel";
 import { dbError, errorSend } from "../models/errorModels";
-import { ReqWithParams, ReqWithQuery } from "../baseTypes";
+import { ReqWithBody, ReqWithParams, ReqWithQuery } from "../baseTypes";
 import { UserData } from "../models/userDataModel";
 import { UpdatePartnerRequest } from "../models/partners/updateDataModel";
 import { RequestWithTable } from "../models/excelFileModel";
 import { getTableFromExcel } from "../utils/tableFromExcel";
 import { CreatePartnerData } from "../models/partners/createDataModel";
+import { excelFromObject } from "../utils/excelFromObject";
 
 export class Partner {
     async reg(req: Request, res: Response) {
@@ -61,12 +62,11 @@ export class Partner {
     }
 
     async massReg(req: Request, res: Response) {
-        
-        const {table} = req as RequestWithTable
+        const { table } = req as RequestWithTable;
 
         const { id } = req.user as UserData;
 
-        if (!table.length) return res.status(204).json()
+        if (!table.length) return res.status(204).json();
 
         let [result] = await dbQuery(
             `/* SQL */ 
@@ -78,14 +78,14 @@ export class Partner {
 
         const organization = result.rows[0].organization ?? "none";
 
-        const [query, values] = insertPartnersQuery(table, id, organization)
+        const [query, values] = insertPartnersQuery(table, id, organization);
 
         // res.json({query, values})
-        const [insertResult] = await dbQuery(query, values)
+        const [insertResult] = await dbQuery(query, values);
 
-        if (insertResult === null) return dbError(res, '#3010')
+        if (insertResult === null) return dbError(res, "#3010");
 
-        res.status(201).json({users: insertResult.rows})
+        res.status(201).json({ users: insertResult.rows });
     }
 
     async list(
@@ -96,9 +96,9 @@ export class Partner {
         const { id } = req.user as UserData;
 
         let { search, order = "true", sort = "id" } = req.query;
-        
+
         order = order == "true";
-        
+
         let serchClause = search
             ? `/* SQL */ 
                 (name LIKE $2 OR
@@ -184,7 +184,7 @@ export class Partner {
 
         const [result] = await dbQuery(queryText, values);
 
-        if (result === null) return dbError(res, "#3009");
+        if (result === null) return dbError(res, "#3011");
 
         res.json({ user: result.rows[0] });
     }
@@ -211,14 +211,16 @@ export class Partner {
 
         res.json({ partner: result.rows[0] });
     }
+
     async updateInfo(req: Request, res: Response) {
         const data = req.body;
         const { id } = req.user as UserData;
 
         const updateKeys = Object.keys(data).filter(
-            (key) => allowedUpdatesInfo.includes(key) && (data[key] != "" || data[key] === null)
+            (key) =>
+                allowedUpdatesInfo.includes(key) &&
+                (data[key] != "" || data[key] === null)
         );
-        
 
         // ToDo | сделать ответ, если не требуется обновление
         if (updateKeys.length === 0) {
@@ -252,44 +254,109 @@ export class Partner {
 
         res.json({ partner: result.rows[0] });
     }
+
+    async download(req: ReqWithBody<{ ids?: string[] }>, res: Response) {
+        const { ids = [] } = req.body;
+
+        const { id } = req.user as UserData;
+
+        const clause = ids.length
+            ? `/* SQL */ WHERE id = ANY($1::int[]) AND partner_id = $2`
+            : `/* SQL */ WHERE partner_id = $1`;
+
+        const [result] = await dbQuery(
+            `/* SQL */ SELECT surname, name, lastname, passport, grade, organization ${clause}`,
+            ids.length ? [ids, id] : [id]
+        );
+
+        if (result === null) return dbError(res, "#3012");
+
+        const [file, err] = excelFromObject(result.rows, {
+            surname: "Фамилия",
+            name: "Имя",
+            lastname: "Отчество",
+            passport: "Паспорт",
+            grade: "Должность",
+            organization: "Организация",
+        });
+
+        if (file === null)
+            return res.status(400).json({ errors: { excel: err } });
+
+        res.setHeader(
+            "Content-Type",
+            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+        );
+        res.setHeader(
+            "Content-Disposition",
+            `attachment; filename="partners.xlsx"`
+        );
+
+        await file.xlsx.write(res);
+        res.end();
+    }
 }
 
 const accessSort = ["id", "name", "surname", "lasname", "organization"];
 
 const allowedUpdatesInfo = [
-    "reminder",
+    "logo",
     "description",
     "contacts",
     "site",
     "organization",
 ];
 
-const allowedUpdates = [
-    "grade",
-    "name",
-    "surname",
-    "lastname",
-    "passport",
-    "activity",
-];
+const allowedUpdates = ["grade", "name", "surname", "lastname", "passport"];
 
-
-function insertPartnersQuery(array: CreatePartnerData[], partner: string, organization: string): [string, any[]] {
-
-    const enhancedParticipants = array.map(participant => ({
+function insertPartnersQuery(
+    array: CreatePartnerData[],
+    partner: string,
+    organization: string
+): [string, any[]] {
+    const enhancedParticipants = array.map((participant) => ({
         ...participant,
-        type: 'partner',
+        type: "partner",
         timestamp: new Date().getTime(),
         partner,
-        organization
+        organization,
     }));
 
-    const values = enhancedParticipants.map(
-        (item, index) => `($${index * 9+ 1}, $${index * 9+ 2}, $${index * 9+ 3}, $${index * 9+ 4}, $${index * 9+ 5}, $${index * 9+ 6}, $${index * 9+ 7}, $${index * 9+ 8}, $${index * 9+ 9})`
-    ).join(', ');
+    const values = enhancedParticipants
+        .map(
+            (item, index) =>
+                `($${index * 9 + 1}, $${index * 9 + 2}, $${index * 9 + 3}, $${
+                    index * 9 + 4
+                }, $${index * 9 + 5}, $${index * 9 + 6}, $${index * 9 + 7}, $${
+                    index * 9 + 8
+                }, $${index * 9 + 9})`
+        )
+        .join(", ");
 
     // Плоский массив всех значений для параметризованного запроса
-    const queryParams = enhancedParticipants.flatMap(({ name, surname, lastname, passport, grade, type, timestamp, partner, organization }) => [name, surname, lastname, passport, grade, type, timestamp, partner, organization]);
+    const queryParams = enhancedParticipants.flatMap(
+        ({
+            name,
+            surname,
+            lastname,
+            passport,
+            grade,
+            type,
+            timestamp,
+            partner,
+            organization,
+        }) => [
+            name,
+            surname,
+            lastname,
+            passport,
+            grade,
+            type,
+            timestamp,
+            partner,
+            organization,
+        ]
+    );
 
     // Создаем запрос
     const query = `/* SQL */ 
@@ -298,5 +365,5 @@ function insertPartnersQuery(array: CreatePartnerData[], partner: string, organi
         RETURNING *
     `;
 
-    return [query, queryParams]
+    return [query, queryParams];
 }
