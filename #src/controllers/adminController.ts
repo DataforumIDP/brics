@@ -8,6 +8,7 @@ import { ReqWithBody, ReqWithParams, ReqWithQuery } from "../baseTypes";
 import { RequestWithTable } from "../models/excelFileModel";
 import { isNotArray } from "../utils/isNoArray";
 import { UserUpdateRequest } from "../models/org/userData";
+import { UserData } from "../models/userDataModel";
 
 export class Admin {
     async massReg(req: Request, res: Response) {
@@ -119,19 +120,22 @@ export class Admin {
         if (data["activity"]) fUserData["activity"] = data["activity"];
 
         if (userData.type !== "partner") {
-
             if (
                 data["accreditation"] &&
                 data["accreditation"] == true &&
-                (["smi", "speacker"].includes(userData.type) || ["smi", "speacker"].includes(data["type"]))
-            ) fUserData["accreditation"] = data["accreditation"];
+                (["smi", "speacker"].includes(userData.type) ||
+                    ["smi", "speacker"].includes(data["type"]))
+            )
+                fUserData["accreditation"] = data["accreditation"];
 
-            if (data["organization"]) fUserData["organization"] = data["organization"];
+            if (data["organization"])
+                fUserData["organization"] = data["organization"];
             if (data["country"]) fUserData["country"] = data["country"];
             if (data["city"]) fUserData["city"] = data["city"];
             if (data["mail"]) fUserData["mail"] = data["mail"];
             if (data["phone"]) fUserData["phone"] = data["phone"];
-            if (data["type"] && userData.created) fUserData["type"] = data["type"];
+            if (data["type"] && userData.created)
+                fUserData["type"] = data["type"];
         }
 
         const updateKeys = Object.keys(fUserData);
@@ -206,7 +210,6 @@ export class Admin {
     }
 
     async partnersDownload(req: Request, res: Response) {
-        
         const [result] = await dbQuery(
             `/* SQL */
             SELECT *
@@ -253,6 +256,60 @@ export class Admin {
         await file.xlsx.write(res);
         res.end();
     }
+
+    async attendeesDownload(
+        req: ReqWithBody<{ ids?: string[] }>,
+        res: Response
+    ) {
+        const { ids = [] } = req.body;
+
+        const { id } = req.user as UserData;
+
+        const clause = ids.length
+            ? `/* SQL */ WHERE id = ANY($1::int[])`
+            : `/* SQL */ WHERE partner_id != $1`;
+
+        const [result] = await dbQuery(
+            `/* SQL */ SELECT surname, name, lastname, passport, grade, organization, type, country, city, mail, phone  FROM users ${clause}`,
+            ids.length ? [ids] : [22]
+        );
+
+        if (result === null) return dbError(res, "#3012");
+
+        const users = result.rows.map((item) => {
+            item.type = typesRevertDict[item.type]
+            return item
+        });
+
+        const [file, err] = excelFromObject(users, {
+            surname: "Фамилия",
+            name: "Имя",
+            lastname: "Отчество",
+            passport: "Паспорт",
+            organization: "Организация",
+            grade: "Должность",
+            type: "Тип",
+            country: "Страна",
+            city: "Город",
+            mail: "Почта",
+            phone: "Телефон",
+        });
+
+        if (file === null)
+            return res.status(400).json({ errors: { excel: err } });
+
+        res.setHeader(
+            "Content-Type",
+            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+        );
+        res.setHeader(
+            "Content-Disposition",
+            `attachment; filename="partners.xlsx"`
+        );
+
+        await file.xlsx.write(res);
+        res.end();
+    }
 }
 
 const accessSort = ["id", "name", "surname", "lasname", "organization"];
@@ -276,7 +333,8 @@ function insertUsersQuery(array: any[]): [string, any[]] {
                 }, $${index * 13 + 7}, 
                   $${index * 13 + 8}, $${index * 13 + 9}, $${index * 13 + 10},
                   $${index * 13 + 11}, $${index * 13 + 12}, $${
-                    index * 13 + 13})`
+                    index * 13 + 13
+                })`
         )
         .join(", ");
 
@@ -332,6 +390,16 @@ const typesDict = {
     Спикер: "speacker",
     "Тех. Персонал": "stuff",
     Партнер: "partner",
+};
+
+const typesRevertDict = {
+    attendees: "Участник",
+    vip: "VIP",
+    org: "Организатор",
+    smi: "Сми",
+    speacker: "Спикер",
+    stuff: "Тех. Персонал",
+    partner: "Партнер",
 };
 
 function filtredTypes(data: string): string[] {
