@@ -32,5 +32,5 @@ adminRouter.delete("/attendees/:id", adminDeleteMiddlewares, admin.delete);
 adminRouter.get("/partners/", [tokenAuthorizeCheck(), typeCheck('org')], admin.partners);
 adminRouter.post("/partners/", [tokenAuthorizeCheck(), typeCheck('org')], admin.partnersGen);
 adminRouter.get("/partners/download/", [tokenAuthorizeCheck(), typeCheck('org')], admin.partnersDownload);
-adminRouter.post("/attendees/download/", [tokenAuthorizeCheck(), typeCheck('org')], admin.partnersDownload);
+adminRouter.post("/attendees/download/", [tokenAuthorizeCheck(), typeCheck('org')], admin.attendeesDownload);
 
