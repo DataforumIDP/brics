@@ -76,6 +76,9 @@ async function sendMail(mail, head, body) {
                 "Content-Type": "application/x-www-form-urlencoded",
             }
         })
+
+        console.log(result.data);
+        
     } catch (e: any) {
         return [null, e]
     }
