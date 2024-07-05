@@ -52,12 +52,36 @@ export class User {
 
         if (result === null) return dbError(res, "#2001");
 
+        if (type == 'attendees') {
+            await sendMail(mail, 'Регистрация на Форум будущего БРИКС. Облачные города', 'Благодарим Вас за регистрацию на Форум будущего БРИКС. Облачные города.<br/> Вы сможете получить распечатанный бейдж на стойке регистрации')
+        }
+
         const user = result.rows[0];
 
         res.json({ user });
     }
 
     
+}
+
+async function sendMail(mail, head, body) {
+    try {
+        const data = new FormData()
+        data.append('email', mail)
+        data.append('subject', head)
+        data.append('body', body)
+
+        const result = await axios.post('https://online.dataforum.pro/webhook_reply_cloudcityconf.php', data, {
+            headers: {
+                "Content-Type": "application/x-www-form-urlencoded",
+            }
+        })
+
+        console.log(result.data);
+        
+    } catch (e: any) {
+        return [null, e]
+    }
 }
 
 // export async function insertAttendees(
