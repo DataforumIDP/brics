@@ -54,7 +54,7 @@ export class User {
         if (type == "attendees") {
             await sendMail(
                 mail,
-                "Регистрация на Форум будущего БРИКС. Облачные города",
+                "Облачные города. Форум о будущем городов БРИКС",
                 mailRegText
             );
         }
