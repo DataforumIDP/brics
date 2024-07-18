@@ -96,6 +96,7 @@ const types = [
     "attendees",
     "smi",
     "speacker",
+    "green"
     // "attendees",
     // "smi",
     // "speacker",

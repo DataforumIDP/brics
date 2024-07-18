@@ -49,7 +49,7 @@ const accreditationMiddleware = body("accreditation")
     .isBoolean()
     .withMessage("Некорректное значение!");
 
-const allowedTypes = ["attendees", "vip", "org", "smi", "speacker", "stuff"];
+const allowedTypes = ["attendees", "vip", "org", "smi", "speacker", "stuff", "green"];
 
 export const adminUserUpdateMiddlewares = [
     tokenAuthorizeCheck(),

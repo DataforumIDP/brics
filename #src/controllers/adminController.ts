@@ -390,6 +390,7 @@ const typesDict = {
     Спикер: "speacker",
     "Тех. Персонал": "stuff",
     Партнер: "partner",
+    "Зеленый БРИКС": "green",
 };
 
 const typesRevertDict = {
@@ -400,6 +401,7 @@ const typesRevertDict = {
     speacker: "Спикер",
     stuff: "Тех. Персонал",
     partner: "Партнер",
+    green: "Зеленый БРИКС"
 };
 
 function filtredTypes(data: string): string[] {
