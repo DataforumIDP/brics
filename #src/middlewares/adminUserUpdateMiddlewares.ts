@@ -15,18 +15,13 @@ const typeMiddleware = body("type")
 
 const nameMiddleware = body("name")
     .optional()
-    .isLength({ min: 3, max: 30 })
+    .isLength({ min: 1, max: 30 })
     .withMessage("Длина Имени от 3-х до 30-ти символов!");
 
 const surnameMiddleware = body("surname")
     .optional()
-    .isLength({ min: 3, max: 30 })
+    .isLength({ min: 1, max: 30 })
     .withMessage("Длина Фамилии от 3-х до 30-ти символов!");
-
-const lastnameMiddleware = body("lastname")
-    .optional()
-    .isLength({max: 30 })
-    .withMessage("Длина Отчества от 3-х до 30-ти символов!");
 
 const gradeMiddleware = body("grade")
     .optional()
@@ -58,7 +53,6 @@ export const adminUserUpdateMiddlewares = [
     typeMiddleware,
     nameMiddleware,
     surnameMiddleware,
-    lastnameMiddleware,
     gradeMiddleware,
     passportMiddleware,
     activityMiddleware,
