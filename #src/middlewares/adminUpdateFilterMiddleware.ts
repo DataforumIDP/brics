@@ -8,7 +8,7 @@ export function adminUpdateFilterMiddleware(
 ) {
     const data = req.body;
     const updateKeys = Object.keys(data).filter(
-        (key) => allowedUpdates.includes(key) && data[key] != ""
+        (key) => allowedUpdates.includes(key) && (data[key] != "" || data[key] === null)
     );
     
     let result = {}
