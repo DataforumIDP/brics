@@ -28,8 +28,6 @@ export class Admin {
             phone = null,
         } = req.body;
 
-        const { id } = req.user as UserData;
-
         const timestamp = new Date().getTime();
 
         const [result] = await dbQuery(
@@ -167,7 +165,7 @@ export class Admin {
 
         if (data["name"]) fUserData["name"] = data["name"];
         if (data["surname"]) fUserData["surname"] = data["surname"];
-        if (data["lastname"]) fUserData["lastname"] = data["lastname"];
+        if (data["lastname"] || data["lastname"]===null) fUserData["lastname"] = data["lastname"];
         if (data["grade"]) fUserData["grade"] = data["grade"];
         if (data["passport"]) fUserData["passport"] = data["passport"];
         if (data["activity"]) fUserData["activity"] = data["activity"];
