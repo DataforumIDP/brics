@@ -25,6 +25,7 @@ adminRouter.use(
 );
 
 adminRouter.post("/attendees/mass", adminMassRegMiddlewares, admin.massReg);
+adminRouter.post("/attendees/", adminMassRegMiddlewares, admin.reg);
 
 adminRouter.get("/attendees/", [tokenAuthorizeCheck(), typeCheck('org')], admin.getList);
 adminRouter.patch("/attendees/:id", adminUserUpdateMiddlewares, admin.update);

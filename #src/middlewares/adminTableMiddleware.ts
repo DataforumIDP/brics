@@ -10,12 +10,12 @@ const tableValidation = (
 
         const { name, surname } = item;
 
-        if (name.length <= 3 || name.length >= 30) {
-            return [false, "Имя должно быть длиннее 3 и короче 30 символов", i];
+        if (name.length < 2 || name.length > 30) {
+            return [false, "Имя максимум 30 сомволов!", i];
         }
 
-        if (surname.length <= 3 || surname.length >= 30) {
-            return [false, "Фамилия должна быть длиннее 3 и короче 30 символов", i];
+        if (surname.length < 2 || surname.length > 30) {
+            return [false, "Фамилия максимум 30 сомволов!", i];
         }
     }
 
