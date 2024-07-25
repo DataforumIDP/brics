@@ -152,6 +152,8 @@ export class Admin {
 
         const data = req.body;
 
+        console.log(data);
+
         const [userRes] = await dbQuery(
             `/* SQL */ SELECT type, created, accreditation FROM users WHERE id=$1`,
             [userId]
