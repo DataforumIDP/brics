@@ -14,6 +14,8 @@ export function adminUpdateFilterMiddleware(
     let result = {}
     updateKeys.map(item=> (result[item] = data[item]))
     req.body = result
+    console.log(req.body);
+    
     next()
 }
 
