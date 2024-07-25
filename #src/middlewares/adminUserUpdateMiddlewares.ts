@@ -25,23 +25,22 @@ const surnameMiddleware = body("surname")
 
 const lastnameMiddleware = body("lastname")
     .optional()
-    .optional()
-    .isLength({ min: 3, max: 30 })
+    .isLength({max: 30 })
     .withMessage("Длина Отчества от 3-х до 30-ти символов!");
 
 const gradeMiddleware = body("grade")
     .optional()
-    .isLength({ min: 3, max: 60 })
+    .isLength({ max: 60 })
     .withMessage("Длина Должности от 3-х до 60-ти символов!");
 
 const passportMiddleware = body("passport")
     .optional()
-    .isLength({ min: 3, max: 60 })
+    .isLength({  max: 60 })
     .withMessage("Длина Паспорта от 3-х до 60-ти символов!");
 
 const activityMiddleware = body("activity")
     .optional()
-    .isLength({ min: 3, max: 60 })
+    .isLength({ max: 60 })
     .withMessage("Длина Деятельности от 3-х до 60-ти символов!");
 
 const accreditationMiddleware = body("accreditation")
