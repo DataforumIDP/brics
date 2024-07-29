@@ -11,6 +11,55 @@ import { UserUpdateRequest } from "../models/org/userData";
 import { UserData } from "../models/userDataModel";
 
 export class Admin {
+
+    async reg(req: Request, res: Response) {
+        
+        const {
+            name,
+            surname,
+            lastname = "",
+            passport = null,
+            organization = null,
+            grade = null,
+            type = 'attendees',
+            country = null,
+            city = null,
+            mail = null,
+            phone = null,
+        } = req.body;
+
+        const timestamp = new Date().getTime();
+
+        const [result] = await dbQuery(
+            `/* SQL */ 
+            INSERT INTO users 
+            (name, surname, lastname, passport, organization, grade, type, country, city, mail, phone, timestamp, created) 
+            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13) 
+            RETURNING *`,
+            [
+                name,
+                surname,
+                lastname,
+                passport,
+                organization,
+                grade,
+                type,
+                country,
+                city,
+                mail,
+                phone,
+                timestamp,
+                true
+            ]
+        );
+
+        if (result === null) return dbError(res, "#3002");
+
+        const user = result.rows[0];
+
+        res.json({ user });
+    }
+
     async massReg(req: Request, res: Response) {
         const { table } = req as RequestWithTable;
 
@@ -101,6 +150,8 @@ export class Admin {
 
         const data = req.body;
 
+        console.log(data);
+
         const [userRes] = await dbQuery(
             `/* SQL */ SELECT type, created, accreditation FROM users WHERE id=$1`,
             [userId]
@@ -114,7 +165,7 @@ export class Admin {
 
         if (data["name"]) fUserData["name"] = data["name"];
         if (data["surname"]) fUserData["surname"] = data["surname"];
-        if (data["lastname"]) fUserData["lastname"] = data["lastname"];
+        if (data["lastname"] || data["lastname"]===null) fUserData["lastname"] = data["lastname"];
         if (data["grade"]) fUserData["grade"] = data["grade"];
         if (data["passport"]) fUserData["passport"] = data["passport"];
         if (data["activity"]) fUserData["activity"] = data["activity"];

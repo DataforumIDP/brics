@@ -7,6 +7,7 @@ import { adminDeleteMiddlewares } from "../middlewares/adminDeleteMiddlewares";
 import { tokenAuthorizeCheck } from "../middlewares/tokenAuthorizeCheck";
 import { typeCheck } from "../middlewares/typeCheck";
 import { adminMassRegMiddlewares } from "../middlewares/adminMassRegMiddlewares";
+import { adminRegMiddlewares  } from "../middlewares/adminRegMiddlewares";
 import { adminUpdateFilterMiddleware } from "../middlewares/adminUpdateFilterMiddleware";
 import { userExists } from "../middlewares/userExists";
 import { adminUserUpdateMiddlewares } from "../middlewares/adminUserUpdateMiddlewares";
@@ -25,6 +26,7 @@ adminRouter.use(
 );
 
 adminRouter.post("/attendees/mass", adminMassRegMiddlewares, admin.massReg);
+adminRouter.post("/attendees/", adminRegMiddlewares, admin.reg);
 
 adminRouter.get("/attendees/", [tokenAuthorizeCheck(), typeCheck('org')], admin.getList);
 adminRouter.patch("/attendees/:id", adminUserUpdateMiddlewares, admin.update);
