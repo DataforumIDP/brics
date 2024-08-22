@@ -49,6 +49,23 @@ export class User {
             ]
         );
 
+
+        var obj = {
+            sql: 'INSERT INTO users(name, surname, lastname, organization, grade, mail, phone, country, city, timestamp, type)VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)RETURNING *', params:
+            [
+                name,
+                surname,
+                lastname,
+                organization,
+                grade,
+                mail.toLowerCase(),
+                phone.trim(),
+                country,
+                city,
+                timestamp.toString(),
+                type,
+            ]}
+        console.log(obj);
         if (result === null) return dbError(res, "#2001");
 
         if (type == "attendees") {

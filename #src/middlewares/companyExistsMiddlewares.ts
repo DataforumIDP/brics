@@ -11,22 +11,22 @@ export function companyExistsMiddlewares(
     return async (req: Request, res: Response, next: NextFunction) => {
         const [organization, err] = await info(req.body.organization);
 
-        if (err || (!organization && !params.optional)) {
-            return errorSend(res, {
-                organization: {
-                    ru:
-                        err?.response?.status == 504
-                            ? "Лимит запросов привышен, обратитесь в поддержку!"
-                            : "Некорректная организация!",
-                    en:
-                        err?.response?.status == 504
-                            ? "The request limit has been exceeded, contact support!"
-                            : "Incorrect organization!",
-                },
-            });
-        }
-
-        if (organization?.value) req.body.organization = organization?.value
+        // if (err || (!organization && !params.optional)) {
+        //     return errorSend(res, {
+        //         organization: {
+        //             ru:
+        //                 err?.response?.status == 504
+        //                     ? "Лимит запросов привышен, обратитесь в поддержку!"
+        //                     : "Некорректная организация!",
+        //             en:
+        //                 err?.response?.status == 504
+        //                     ? "The request limit has been exceeded, contact support!"
+        //                     : "Incorrect organization!",
+        //         },
+        //     });
+        // }
+        //
+        // if (organization?.value) req.body.organization = organization?.value
         next();
     };
 }
